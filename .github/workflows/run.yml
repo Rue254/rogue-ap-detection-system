@@ -1,0 +1,8 @@
+name: serverless-demo
+on: push
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: echo "Hello from an on-demand Linux runner" && uname -a && php -v
