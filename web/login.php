@@ -3,16 +3,22 @@ require 'db.php';
 session_start();
 $msg = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $u = trim($_POST['username']);
-    $stmt = $conn->prepare("SELECT password FROM users WHERE username = ?");
-    $stmt->bind_param("s", $u);
-    $stmt->execute();
-    $row = $stmt->get_result()->fetch_assoc();
-    if ($row && password_verify($_POST['password'], $row['password'])) {
-        $_SESSION['user'] = $u;
-        $msg = "Login successful. Welcome, " . $u . "!";
-    } else {
+    $u  = trim($_POST['username'] ?? '');
+    $pw = $_POST['password'] ?? '';
+    if ($u === '' || strlen($u) > 30 || $pw === '' || strlen($pw) > 72) {
         $msg = "Invalid username or password.";
+    } else {
+        $stmt = $conn->prepare("SELECT password FROM users WHERE username = ?");
+        $stmt->bind_param("s", $u);
+        $stmt->execute();
+        $row = $stmt->get_result()->fetch_assoc();
+        if ($row && password_verify($pw, $row['password'])) {
+            session_regenerate_id(true);
+            $_SESSION['user'] = $u;
+            $msg = "Login successful. Welcome, " . htmlspecialchars($u, ENT_QUOTES) . "!";
+        } else {
+            $msg = "Invalid username or password.";
+        }
     }
 }
 ?>
@@ -33,8 +39,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <h2>Login</h2>
     <p><?= htmlspecialchars($msg) ?></p>
     <form method="post">
-      <input name="username" placeholder="Username" required>
-      <input name="password" type="password" placeholder="Password" required>
+      <input name="username" maxlength="30" placeholder="Username" required>
+      <input name="password" maxlength="72" type="password" placeholder="Password" required>
       <button type="submit">Login</button>
     </form>
     <p>No account? <a href="register.php">Sign up</a></p>
