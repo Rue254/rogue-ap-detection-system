@@ -47,7 +47,7 @@ $result = $conn->query("SELECT * FROM feedback ORDER BY id DESC");
         <td><?= $r['id'] ?></td>
         <td><?= htmlspecialchars($r['name']) ?></td>
         <td><?= htmlspecialchars($r['comment']) ?></td>
-        <td><?= $r['created_at'] ?></td>
+        <td><?= htmlspecialchars($r["created_at"]) ?></td>
       </tr>
       <?php endwhile; ?>
     </table>
