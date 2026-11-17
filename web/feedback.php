@@ -2,9 +2,17 @@
 require 'db.php';
 $msg = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $stmt = $conn->prepare("INSERT INTO feedback (name, comment) VALUES (?, ?)");
-    $stmt->bind_param("ss", $_POST['name'], $_POST['comment']);
-    $msg = $stmt->execute() ? "Feedback submitted!" : "Error: " . $conn->error;
+    $name    = trim($_POST['name'] ?? '');
+    $comment = trim($_POST['comment'] ?? '');
+    if ($name === '' || mb_strlen($name) > 100) {
+        $msg = "Name is required (max 100 characters).";
+    } elseif ($comment === '' || mb_strlen($comment) > 1000) {
+        $msg = "Feedback is required (max 1000 characters).";
+    } else {
+        $stmt = $conn->prepare("INSERT INTO feedback (name, comment) VALUES (?, ?)");
+        $stmt->bind_param("ss", $name, $comment);
+        $msg = $stmt->execute() ? "Feedback submitted!" : "Could not save feedback.";
+    }
 }
 $result = $conn->query("SELECT * FROM feedback ORDER BY id DESC");
 ?>
@@ -27,8 +35,8 @@ $result = $conn->query("SELECT * FROM feedback ORDER BY id DESC");
     <h2>System Feedback</h2>
     <p><?= htmlspecialchars($msg) ?></p>
     <form method="post">
-      <input name="name" placeholder="Your name" required>
-      <textarea name="comment" placeholder="Your feedback on the detection system" required></textarea>
+      <input name="name" maxlength="100" placeholder="Your name" required>
+      <textarea name="comment" maxlength="1000" placeholder="Your feedback on the detection system" required></textarea>
       <button type="submit">Submit</button>
     </form>
     <h3>Submitted entries</h3>
