@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <p><?= htmlspecialchars($msg) ?></p>
     <form method="post">
       <input name="username" minlength="3" maxlength="30" pattern="[A-Za-z0-9_]+" title="3-30 letters, digits or underscore" placeholder="Username" required>
-      <input name="email" type="email" maxlength="100" type="email" placeholder="Email">
+      <input name="email" type="email" maxlength="100" placeholder="Email" required>
       <input name="password" minlength="8" maxlength="72" type="password" placeholder="Password" required>
       <button type="submit">Register</button>
     </form>
