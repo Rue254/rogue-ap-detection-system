@@ -1,7 +1,7 @@
 <?php
-session_set_cookie_params(['domain' => '.isproject.test', 'httponly' => true, 'samesite' => 'Lax']);
+session_set_cookie_params(['domain' => '.rogueapdetec.me', 'httponly' => true, 'samesite' => 'Lax']);
 session_start();
-if (!isset($_SESSION['user'])) { header('Location: http://app.isproject.test:8081/login.php'); exit; }
+if (!isset($_SESSION['user'])) { header('Location: https://app.rogueapdetec.me/login.php'); exit; }
 ?>
 <!DOCTYPE html>
 <html><head><meta charset="UTF-8"><title>Admin Panel</title></head>
